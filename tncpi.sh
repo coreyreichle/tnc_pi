@@ -25,17 +25,13 @@ For this script to run correctly, it must be executed as root, or with sudo.  It
 cannot be ran as a non-privileged user.  It is assumed you'll have a USB sound
 device connected eventually, along with VOX for PTT.  You must have an active
 internet connection for this script to complete, preferably, over ethernet.
-
-Args that must be suppled is the callsign and SID, in the format of
-{CALLSIGN}-{SID}.
-
 _EOF
 
 echo "Ensuring your pi is up-to-date..."
 apt-get update ; sudo apt-get upgrade -y
 
 echo "Installing required packages..."
-apt-get install gpsd-clients git libasound2-dev gpsd libgps-dev build-essential automake libtool texinfo git wget libhamlib libhamlib-dev
+apt-get install gpsd-clients git libasound2-dev gpsd libgps-dev build-essential automake libtool texinfo git wget libhamlib-dev
 
 echo "Cloning in repos..."
 git clone https://www.github.com/wb2osz/direwolf
