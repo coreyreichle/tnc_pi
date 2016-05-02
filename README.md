@@ -1,4 +1,4 @@
-tncpi.sh is a small script to deploy a wifi-enabled TNC, utilizing direwolf on Raspbian Jessie.
+Have you ever wanted to sit on your couch, and remotely access your TNC over wifi, and not in the shack?  If so, tncpi.sh is a small script to deploy a wifi-enabled TNC, utilizing direwolf on Raspbian Jessie.
 
 Once completed, and rebooted, the Pi will act as both a TNC and an access point.
 
