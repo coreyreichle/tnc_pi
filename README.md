@@ -22,3 +22,4 @@ Or, lastly, copy the tncpi.sh script to the sd card in whatever manner you choos
 # ToDo
 * Build a management interface for direwolf
 * Enable direwolf startup on boot
+* Add install-time option to configure a BBS on board (JNOS or something similar)
