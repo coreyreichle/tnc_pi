@@ -48,7 +48,7 @@ sed -i 's/\#CFLAGS += -DUSE_HAMLIB/CFLAGS += -DUSE_HAMLIB/g' Makefile.linux
 sed -i 's/\#LDFLAGS += -lhamlib/LDFLAGS += -lhamlib/g' Makefile.linux
 
 echo "Building direwolf..."
-make
+make && make install
 
 echo "Configuring gpsd to allow network connections..."
 sed 's/ListenStream=127.0.0.1:2947/ListenStream=0.0.0.0:2947/g' /lib/systemd/system/gpsd.socket > /etc/systemd/system/gpsd.socket
