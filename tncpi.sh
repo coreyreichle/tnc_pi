@@ -3,7 +3,7 @@
 #################################################################
 #
 # TNC Pi Build Script
-#	vr 0.5
+#	vr 0.6
 #
 # Written by Corey Reichle
 # 05/01/2016
@@ -12,6 +12,7 @@
 # Version History:
 #
 # 0.5			Initial release verion on Jessie
+# 0.6     Fixed up some bugs
 #
 #################################################################
 
