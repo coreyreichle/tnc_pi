@@ -31,7 +31,7 @@ echo "Ensuring your pi is up-to-date..."
 apt-get update ; sudo apt-get upgrade -y
 
 echo "Installing required packages..."
-apt-get install gpsd-clients git libasound2-dev gpsd libgps-dev build-essential automake libtool texinfo git wget libhamlib-dev
+apt-get -y install gpsd-clients git libasound2-dev gpsd libgps-dev build-essential automake libtool texinfo git wget libhamlib-dev
 
 echo "Cloning in repos..."
 git clone https://www.github.com/wb2osz/direwolf
