@@ -3,7 +3,7 @@
 #################################################################
 #
 # TNC Pi Build Script
-#	vr 0.6
+#	vr 0.9
 #
 # Written by Corey Reichle
 # 05/01/2016
@@ -13,8 +13,13 @@
 #
 # 0.5			Initial release verion on Jessie
 # 0.6     Fixed up some bugs
+# 0.9     Added cron job to start direwolf
+#         Added intake option for callsign-{sid}
+#         Added direwolf config
 #
 #################################################################
+
+export CALLSIGN=$1
 
 cd /home/pi
 
@@ -26,8 +31,15 @@ For this script to run correctly, it must be executed as root, or with sudo.  It
 cannot be ran as a non-privileged user.  It is assumed you'll have a USB sound
 device connected eventually, along with VOX for PTT.  You must have an active
 internet connection for this script to complete, preferably, over ethernet.
+
+You must supply the callsign for auto-configuration.
 _EOF
 
+if [[ $CALLSIGN == "" ]] then;
+  echo "No Callsign provided.  Please provide a callsign"
+  exit 1
+fi
+  
 echo "Ensuring your pi is up-to-date..."
 apt-get update ; sudo apt-get upgrade -y
 
@@ -59,6 +71,55 @@ cp /lib/systemd/system/gpsd.service /etc/systemd/system/gpsd.service
 echo "Reloading new gpsd settings..."
 sudo systemctl daemon-reload
 sudo service gpsd restart
+
+echo "Installing cron job to keep direwolf running..."
+cat > /home/pi/dw_start.sh <<'_EOF'
+#!/bin/bash
+
+#
+# Nothing to do if it is already running.
+#
+
+a=`ps -ef | grep direwolf | grep -v grep`
+if [ "$a" != "" ] 
+then
+  #date >> /tmp/dw-start.log
+  #echo "Already running." >> /tmp/dw-start.log
+  exit
+fi
+
+echo "---begin--------------------" >> /tmp/dw-start.log
+date >> /tmp/dw-start.log
+echo "Direwolf not running." >> /tmp/dw-start.log
+echo "Start up application." >> /tmp/dw-start.log
+
+/usr/local/bin/direwolf -c /home/pi/direwolf.conf -l /home/pi/dwlogs -t 0
+
+echo "---end--------------------" >> /tmp/dw-start.log
+_EOF
+
+chmod +x /home/pi/dw-start.sh
+chown pi:pi /home/pi/dw-start.sh
+
+(crontab -l -u pi 2>/dev/null; echo "* * * * * /home/pi/dw-start.sh >/dev/null  2>&1") | crontab -
+
+echo "Writing direwolf config..."
+
+cat > /home/pi/direwolf.conf <<_EOF
+ADEVICE plughw:1,0
+ACHANNELS 1
+CHANNEL 0
+MYCALL $CALLSIGN
+MODEM 1200
+# This is where you must configure your PTT.  You can leave it alone if you're planning to use VOX.
+# The line below is an example of an FT-817ND (120 in rigctl), using ttyUSB0.
+#PTT RIG 120 /dev/ttyUSB0
+AGWPORT 8000
+KISSPORT 8001
+
+TBEACON DELAY=0:30 EVERY=2:00 VIA=WIDE1-1 SYMBOL=car
+SMARTBEACONING
+_EOF
 
 echo "Building your Wifi Access Point..."
 echo "Hit <CTRL><C> if you want to skip this step.  Otherwise, hit any key to continue..."
