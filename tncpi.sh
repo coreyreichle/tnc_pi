@@ -76,7 +76,7 @@ sudo systemctl daemon-reload
 sudo service gpsd restart
 
 echo "Installing cron job to keep direwolf running..."
-cat > /home/pi/dw_start.sh <<'_EOF'
+cat > /home/pi/dw-start.sh <<'_EOF'
 #!/bin/bash
 
 #
