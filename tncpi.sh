@@ -35,6 +35,9 @@ internet connection for this script to complete, preferably, over ethernet.
 You must supply the callsign for auto-configuration.
 _EOF
 
+echo "Hit <CTRL><C> to cancel, otherwise, hit any key to continue..."
+read line
+
 if [[ ${CALLSIGN} == "" ]]; then
   echo "No Callsign provided.  Please provide a callsign"
   exit 1
