@@ -35,11 +35,11 @@ internet connection for this script to complete, preferably, over ethernet.
 You must supply the callsign for auto-configuration.
 _EOF
 
-if [[ $CALLSIGN == "" ]] then;
+if [[ ${CALLSIGN} == "" ]]; then
   echo "No Callsign provided.  Please provide a callsign"
   exit 1
 fi
-  
+
 echo "Ensuring your pi is up-to-date..."
 apt-get update ; sudo apt-get upgrade -y
 
