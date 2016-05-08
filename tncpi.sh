@@ -104,7 +104,7 @@ _EOF
 chmod +x /home/pi/dw-start.sh
 chown pi:pi /home/pi/dw-start.sh
 
-(crontab -l -u pi 2>/dev/null; echo "* * * * * /home/pi/dw-start.sh >/dev/null  2>&1") | crontab -
+(crontab -l -u pi 2>/dev/null; echo "* * * * * /home/pi/dw-start.sh >/dev/null  2>&1") | crontab -u pi -
 
 echo "Writing direwolf config..."
 
