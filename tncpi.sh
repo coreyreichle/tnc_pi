@@ -130,7 +130,7 @@ read line
 
 cd /home/pi
 echo "Getting the wifipi.sh script..."
-wget https://raw.githubusercontent.com/coreyreichle/wifi_pi/master/wifipi.sh
+wget -O https://raw.githubusercontent.com/coreyreichle/wifi_pi/master/wifipi.sh
 echo "Customizing it, to remove the giant apt purge..."
 sed -i '51,82d' wifipi.sh
 chmod +x wifipi.sh
