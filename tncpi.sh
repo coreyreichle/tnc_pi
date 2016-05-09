@@ -139,8 +139,8 @@ fclose($file);
 }
 
 if (isset($_POST['restart'])) {
-$command = "pkill -9 direwolf";
-$output = system($command);
+$command = "sudo /usr/bin/pkill -9 direwolf";
+echo system($command);
 print("Direwolf killed.  Process will respawn in the next few minutes.");
 }
 
@@ -163,6 +163,8 @@ fclose($file);
 </form>
 _EOF
 rm /var/www/html/index.html
+
+echo "www-data    ALL=NOPASSWD: /usr/bin/pkill -9 direwolf" > /etc/sudoers.d/tncpi
 
 echo "Building your Wifi Access Point..."
 echo "Hit <CTRL><C> if you want to skip this step.  Otherwise, hit any key to continue..."
