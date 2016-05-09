@@ -16,7 +16,7 @@
 # 0.9     Added cron job to start direwolf
 #         Added intake option for callsign-{sid}
 #         Added direwolf config
-# 0.9.5	 Added direwolf management page
+# 0.9.5   Added direwolf management page
 #
 #################################################################
 
