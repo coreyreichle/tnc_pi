@@ -19,6 +19,10 @@ After you've verified the above, you can execute either:
 
 Or, lastly, copy the tncpi.sh script to the sd card in whatever manner you choose.  Sit back, grab a cup of coffee.  The only time you'll need to check on it, is when it gets to the wifi AP portion.  You can either choose to abort now, and just use your TNC as is, or enable the wifi AP.
 
+This script also installs a webpage for managing direwolf's config, and to also force a reload (via killing the process).  Be warned, this should not be installed on a publicly acccesible machine, there's 0, zero, nada, none, nothing in the way of security.  Anyone can reconfigure the direwolf process, if they have access to the web UI.
+
+Once some display of logging is in the UI for the direwolf instance, version will get bumped to 1.0, and could be considered ready for general deployment.
+
 # ToDo
 * ~~Build a management interface for direwolf~~
 * ~~Enable direwolf startup on boot~~
