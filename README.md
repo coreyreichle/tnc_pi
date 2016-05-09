@@ -20,6 +20,6 @@ After you've verified the above, you can execute either:
 Or, lastly, copy the tncpi.sh script to the sd card in whatever manner you choose.  Sit back, grab a cup of coffee.  The only time you'll need to check on it, is when it gets to the wifi AP portion.  You can either choose to abort now, and just use your TNC as is, or enable the wifi AP.
 
 # ToDo
-* Build a management interface for direwolf
+* ~~Build a management interface for direwolf~~
 * ~~Enable direwolf startup on boot~~
 * Add install-time option to configure a BBS on board (JNOS or something similar)
