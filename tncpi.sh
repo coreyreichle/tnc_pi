@@ -156,7 +156,7 @@ fclose($file);
 
 <form action="<?php $_SERVER['PHP_SELF']; ?>" method="post"> 
 <h3>Current configuration for direwolf:</p></h3>
-<textarea rows="20" cols="80"><?=$text?></textarea><br/>
+<textarea disabled rows="20" cols="80"><?=$text?></textarea><br/>
 <h3>New Configuration for direwolf </p></h3> 
 <textarea rows="20" cols="80" name="addition"><?=$text?></textarea>
 <input type="submit"/>
