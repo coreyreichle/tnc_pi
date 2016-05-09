@@ -16,6 +16,7 @@
 # 0.9     Added cron job to start direwolf
 #         Added intake option for callsign-{sid}
 #         Added direwolf config
+# 0.9.5	 Added direwolf management page
 #
 #################################################################
 
@@ -47,7 +48,7 @@ echo "Ensuring your pi is up-to-date..."
 apt-get update ; sudo apt-get upgrade -y
 
 echo "Installing required packages..."
-apt-get -y install gpsd-clients git libasound2-dev gpsd libgps-dev build-essential automake libtool texinfo git wget libhamlib-dev
+apt-get -y install gpsd-clients git libasound2-dev gpsd libgps-dev build-essential automake libtool texinfo git wget libhamlib-dev apache2 php5 libapache2-mod-php5 php5-mcrypt apache2
 
 echo "Cloning in repos..."
 git clone https://www.github.com/wb2osz/direwolf
@@ -123,6 +124,45 @@ KISSPORT 8001
 TBEACON DELAY=0:30 EVERY=2:00 VIA=WIDE1-1 SYMBOL=car
 SMARTBEACONING
 _EOF
+
+chmod 766 /home/pi/direwolf.conf
+echo "Creating direwolf config management page..."
+
+cat > /var/www/html/index.php << '_EOF'
+<?php 
+$fn = "/home/pi/direwolf.conf"; 
+
+if (isset($_POST['addition'])) {
+$file = fopen($fn, "w");
+fwrite($file, $_POST['addition']); 
+fclose($file);
+}
+
+if (isset($_POST['restart'])) {
+$command = "pkill -9 direwolf";
+$output = system($command);
+print("Direwolf killed.  Process will respawn in the next few minutes.");
+}
+
+$file = fopen($fn, "r");
+$size = filesize($fn);
+$text = fread($file, $size); 
+fclose($file); 
+?> 
+
+<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post">
+<input type="submit" value="Restart Direwolf" name="restart">
+</form>
+
+<form action="<?php $_SERVER['PHP_SELF']; ?>" method="post"> 
+<h3>Current configuration for direwolf:</p></h3>
+<textarea rows="20" cols="80"><?=$text?></textarea><br/>
+<h3>New Configuration for direwolf </p></h3> 
+<textarea rows="20" cols="80" name="addition"><?=$text?></textarea>
+<input type="submit"/>
+</form>
+_EOF
+rm /var/www/html/index.html
 
 echo "Building your Wifi Access Point..."
 echo "Hit <CTRL><C> if you want to skip this step.  Otherwise, hit any key to continue..."
