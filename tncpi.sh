@@ -3,7 +3,7 @@
 #################################################################
 #
 # TNC Pi Build Script
-#	vr 0.9
+#	vr 0.9.6
 #
 # Written by Corey Reichle
 # 05/01/2016
@@ -17,7 +17,11 @@
 #         Added intake option for callsign-{sid}
 #         Added direwolf config
 # 0.9.5	 Added direwolf management page
-#
+# 0.9.6   Added ax25 packages to apt-get install
+#         Added ax25 stack configuration
+#         Added startup option to direwolf to open a pty
+#         Added kissattach statement to enable ax25 kernel stack
+#         Added re-hostnaming of the pi, to the provided callsign
 #################################################################
 
 export CALLSIGN=$1
@@ -48,15 +52,15 @@ echo "Ensuring your pi is up-to-date..."
 apt-get update ; sudo apt-get upgrade -y
 
 echo "Installing required packages..."
-apt-get -y install gpsd-clients git libasound2-dev gpsd libgps-dev build-essential automake libtool texinfo git wget libhamlib-dev apache2 php5 libapache2-mod-php5 php5-mcrypt apache2
+apt-get -y install gpsd-clients git libasound2-dev gpsd libgps-dev build-essential automake libtool texinfo git wget libhamlib-dev apache2 php5 libapache2-mod-php5 php5-mcrypt apache2 ax25-tools ax25-apps &>/dev/null
 
 echo "Cloning in repos..."
-git clone https://www.github.com/wb2osz/direwolf
-git clone git://hamlib.git.sourceforge.net/gitroot/hamlib/hamlib
+git clone https://www.github.com/wb2osz/direwolf &>/dev/null
+git clone git://hamlib.git.sourceforge.net/gitroot/hamlib/hamlib &>/dev/null
 
 echo "Building hamlib..."
-cd hamlib ; sh autogen.sh && make && make check
-make install
+cd hamlib ; sh autogen.sh && make && make check &>/dev/null
+make install &>/dev/null
 
 
 cd ../direwolf/
@@ -65,7 +69,7 @@ sed -i 's/\#CFLAGS += -DUSE_HAMLIB/CFLAGS += -DUSE_HAMLIB/g' Makefile.linux
 sed -i 's/\#LDFLAGS += -lhamlib/LDFLAGS += -lhamlib/g' Makefile.linux
 
 echo "Building direwolf..."
-make && make install
+make && make install&>/dev/null
 
 echo "Configuring gpsd to allow network connections..."
 sed 's/ListenStream=127.0.0.1:2947/ListenStream=0.0.0.0:2947/g' /lib/systemd/system/gpsd.socket > /etc/systemd/system/gpsd.socket
@@ -73,8 +77,8 @@ sed 's/GPSD_OPTIONS=\"\"/GPSD_OPTIONS=\"-G\"/g' /etc/default/gpsd > /etc/default
 cp /lib/systemd/system/gpsd.service /etc/systemd/system/gpsd.service
 
 echo "Reloading new gpsd settings..."
-sudo systemctl daemon-reload
-sudo service gpsd restart
+sudo systemctl daemon-reload &>/dev/null
+sudo service gpsd restart &>/dev/null
 
 echo "Installing cron job to keep direwolf running..."
 cat > /home/pi/dw-start.sh <<'_EOF'
@@ -98,6 +102,8 @@ echo "Direwolf not running." >> /tmp/dw-start.log
 echo "Start up application." >> /tmp/dw-start.log
 
 /usr/local/bin/direwolf -c /home/pi/direwolf.conf -l /home/pi/dwlogs -t 0
+
+sudo /usr/sbin/kissattach /tmp/kisstnc sm0 10.10.0.1 >> /tmp/dw-start.log
 
 echo "---end--------------------" >> /tmp/dw-start.log
 _EOF
@@ -165,6 +171,14 @@ _EOF
 rm /var/www/html/index.html
 
 echo "www-data    ALL=NOPASSWD: /usr/bin/pkill -9 direwolf" > /etc/sudoers.d/tncpi
+
+echo "Configuring the AX25 stack..."
+cat > /etc/ax25/axports << _EOF
+sm0 $CALLSIGN 1200 255 2 2m packet
+_EOF
+
+echo $CALLSIGN > /etc/hostname
+sed -i "s/raspberrypi/$CALLSIGN/g" /etc/hosts
 
 echo "Building your Wifi Access Point..."
 echo "Hit <CTRL><C> if you want to skip this step.  Otherwise, hit any key to continue..."
