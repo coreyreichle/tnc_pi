@@ -91,8 +91,8 @@ cat > /home/pi/dw-start.sh <<'_EOF'
 a=`ps -ef | grep direwolf | grep -v grep`
 if [ "$a" != "" ] 
 then
-  #date >> /tmp/dw-start.log
-  #echo "Already running." >> /tmp/dw-start.log
+  date >> /tmp/dw-start.log
+  echo "Already running." >> /tmp/dw-start.log
   exit
 fi
 
@@ -116,7 +116,7 @@ chown pi:pi /home/pi/dw-start.sh
 echo "Writing direwolf config..."
 
 cat > /home/pi/direwolf.conf <<_EOF
-ADEVICE plughw:1,0
+ADEVICE plughw:0,0
 ACHANNELS 1
 CHANNEL 0
 MYCALL $CALLSIGN
@@ -174,11 +174,16 @@ echo "www-data    ALL=NOPASSWD: /usr/bin/pkill -9 direwolf" > /etc/sudoers.d/tnc
 
 echo "Configuring the AX25 stack..."
 cat > /etc/ax25/axports << _EOF
-sm0 $CALLSIGN 1200 255 2 2m packet
+sm0 $CALLSIGN 1200  255  2  2m packet
+_EOF
+
+cat > /etc/ax25/nrports << _EOF
+netrom  $CALLSIGN #$CALLSIGN  255 2m packet
 _EOF
 
 echo $CALLSIGN > /etc/hostname
 sed -i "s/raspberrypi/$CALLSIGN/g" /etc/hosts
+hostname $CALLSIGN
 
 echo "Building your Wifi Access Point..."
 echo "Hit <CTRL><C> if you want to skip this step.  Otherwise, hit any key to continue..."
